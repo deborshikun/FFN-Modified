@@ -3,3 +3,6 @@ venv/
 
 # Python cache directories
 __pycache__/
+
+# Large data file
+prop_8_data/nonadv_total.txt
