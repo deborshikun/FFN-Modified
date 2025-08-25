@@ -9,6 +9,10 @@ import glob
 import os
 import pickle  # For saving and loading models
 
+# Ensure output directory exists for models and plots
+OUTPUT_DIR = "prop_8_data"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 def parse_input_file(filename):
     """Parse input vectors from text files."""
     inputs = []
@@ -43,8 +47,8 @@ def load_data_from_file(filename):
 
 
 # Define the filenames
-adversarial_filename = "adv_merged.txt"
-non_adversarial_filename = "nonadv_merged.txt"
+adversarial_filename = "prop_8_data/adv_merged.txt"
+non_adversarial_filename = "prop_8_data/nonadv_merged.txt"
 
 # Load adversarial data (SAT cases) = Class 1
 print(f"Loading adversarial data from '{adversarial_filename}'...")
@@ -97,7 +101,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random
 print("\nData split into training (75%) and testing (25%) sets")
 
 # Create a Decision Tree Classifier object
-model_filename = "decision_tree_model.pkl"
+model_filename = os.path.join(OUTPUT_DIR, "decision_tree_model.pkl")
 force_retrain = True  # True if you want to retrain even if model exists
 
 # Check if a trained model already exists
@@ -158,7 +162,7 @@ plot_tree(
 )
 plt.title("Trained Decision Tree for Adversarial Input Classification", fontsize=48)
 plt.tight_layout()  # Better spacing
-plt.savefig("dt_plot.png", dpi=200, bbox_inches='tight', facecolor='white')
+plt.savefig(os.path.join(OUTPUT_DIR, "dt_plot.png"), dpi=200, bbox_inches='tight', facecolor='white')
 plt.show()
 # Classifying new input sample
 new_input = np.array([-0.016045, -0.489653, -0.009506, 0.243222, 0.274097]).reshape(1, -1)

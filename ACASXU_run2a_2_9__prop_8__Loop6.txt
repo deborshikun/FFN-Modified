@@ -1,3 +1,0 @@
-Status: violated
-Adversarial inputs found:
-  [-0.153372, -0.491934, -0.008131, 0.276287, 0.296188]

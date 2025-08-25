@@ -31,8 +31,8 @@ def load_data_from_file(filename):
     print(f"Found {len(inputs)} inputs.")
     return np.array(inputs) if inputs else np.array([])
 
-adversarial_filename = "adv_merged.txt"
-non_adversarial_filename = "nonadv_merged.txt"
+adversarial_filename = "prop_8_data/adv_merged.txt"
+non_adversarial_filename = "prop_8_data/nonadv_merged.txt"
 
 # print(f"Loading adversarial data from '{adversarial_filename}'")
 adversarial_data = load_data_from_file(adversarial_filename)
@@ -111,7 +111,7 @@ dot_data = export_graphviz(
 graph = graphviz.Source(dot_data)
 
 #output decision tree to a file dt_plot_dot
-graph.render("dt_plot_dot", format='png', view=False, cleanup=True)
+graph.render("prop_8_data/dt_plot_dot", format='png', view=False, cleanup=True)
 
 #Classifying a new input
 new_input = np.array([-0.016045, -0.489653, -0.009506, 0.243222, 0.274097]).reshape(1, -1)
