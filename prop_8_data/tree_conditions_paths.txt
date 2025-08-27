@@ -1,0 +1,26 @@
+1. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 <= 0.291973, feature_3 <= 0.121781, feature_2 <= 0.015526
+2. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 <= 0.291973, feature_3 <= 0.121781, feature_2 > 0.015526, feature_2 <= 0.0155385
+3. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 <= 0.291973, feature_3 <= 0.121781, feature_2 > 0.015526, feature_2 > 0.0155385
+4. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 <= 0.291973, feature_3 > 0.121781, feature_2 <= -0.0030635, feature_0 <= -0.208746
+5. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 <= 0.291973, feature_3 > 0.121781, feature_2 <= -0.0030635, feature_0 > -0.208746
+6. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 <= 0.291973, feature_3 > 0.121781, feature_2 > -0.0030635, feature_3 <= 0.186392
+7. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 <= 0.291973, feature_3 > 0.121781, feature_2 > -0.0030635, feature_3 > 0.186392
+8. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 > 0.291973, feature_4 <= 0.370163, feature_3 <= 0.264563, feature_3 <= -0.041378
+9. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 > 0.291973, feature_4 <= 0.370163, feature_3 <= 0.264563, feature_3 > -0.041378
+10. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 > 0.291973, feature_4 <= 0.370163, feature_3 > 0.264563, feature_0 <= -0.162777
+11. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 > 0.291973, feature_4 <= 0.370163, feature_3 > 0.264563, feature_0 > -0.162777
+12. feature_1 <= -0.490342, feature_0 <= -0.0287925, feature_4 > 0.291973, feature_4 > 0.370163
+13. feature_1 <= -0.490342, feature_0 > -0.0287925, feature_4 <= 0.0877155, feature_2 <= -0.0014385, feature_0 <= 0.353335, feature_0 <= -0.0278955
+14. feature_1 <= -0.490342, feature_0 > -0.0287925, feature_4 <= 0.0877155, feature_2 <= -0.0014385, feature_0 <= 0.353335, feature_0 > -0.0278955
+15. feature_1 <= -0.490342, feature_0 > -0.0287925, feature_4 <= 0.0877155, feature_2 <= -0.0014385, feature_0 > 0.353335, feature_3 <= 0.027851
+16. feature_1 <= -0.490342, feature_0 > -0.0287925, feature_4 <= 0.0877155, feature_2 <= -0.0014385, feature_0 > 0.353335, feature_3 > 0.027851
+17. feature_1 <= -0.490342, feature_0 > -0.0287925, feature_4 <= 0.0877155, feature_2 > -0.0014385, feature_4 <= 0.000136
+18. feature_1 <= -0.490342, feature_0 > -0.0287925, feature_4 <= 0.0877155, feature_2 > -0.0014385, feature_4 > 0.000136
+19. feature_1 <= -0.490342, feature_0 > -0.0287925, feature_4 > 0.0877155
+20. feature_1 > -0.490342, feature_1 <= -0.473274, feature_0 <= 0.0121805, feature_0 <= -0.175906
+21. feature_1 > -0.490342, feature_1 <= -0.473274, feature_0 <= 0.0121805, feature_0 > -0.175906, feature_4 <= 0.361142, feature_3 <= 0.238344
+22. feature_1 > -0.490342, feature_1 <= -0.473274, feature_0 <= 0.0121805, feature_0 > -0.175906, feature_4 <= 0.361142, feature_3 > 0.238344
+23. feature_1 > -0.490342, feature_1 <= -0.473274, feature_0 <= 0.0121805, feature_0 > -0.175906, feature_4 > 0.361142
+24. feature_1 > -0.490342, feature_1 <= -0.473274, feature_0 > 0.0121805
+25. feature_1 > -0.490342, feature_1 > -0.473274, feature_3 <= -0.0454545
+26. feature_1 > -0.490342, feature_1 > -0.473274, feature_3 > -0.0454545
