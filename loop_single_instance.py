@@ -10,6 +10,8 @@ single = "run_single_instance.py"
 onnx_name = input("Model Name: ")
 prop_name = input("Property Name: ")
 
+prop_fol = prop_name+"_data"
+
 onnx_path = "benchmarks/acasxu/" + onnx_name + "_batch_2000.onnx"
 prop_path = "benchmarks/acasxu/" + prop_name + ".vnnlib"
 
@@ -18,24 +20,24 @@ if not timeoutval:
     timeoutval = 300
 
 # Ensure output directory exists
-os.makedirs("prop_8_data", exist_ok=True)
+os.makedirs(prop_fol, exist_ok=True)
 
 i = 0
-while i < 50:
-    os.system(f"python {single} -m {onnx_path} -p {prop_path} -o prop_8_data/{onnx_name}__{prop_name}__Loop{i}.txt -t {timeoutval}")
+while i < 5:
+    os.system(f"python {single} -m {onnx_path} -p {prop_path} -o {prop_fol}/{onnx_name}__{prop_name}__Loop{i}.txt -t {timeoutval}")
     i += 1
 
 # Merging time
-def merge_adversarial_files(onnx_name, prop_name, num_loops=50):
+def merge_adversarial_files(onnx_name, prop_name, num_loops=5):
     """Merge adversarial inputs from all loop files"""
     merged_adv_content = []
     merged_nonadv_content = []
     
     for i in range(num_loops):
         # Check main adversarial file
-        filename_adv = f"{onnx_name}__{prop_name}__Loop{i}.txt"
+        filename_adv = f"{prop_fol}/{onnx_name}__{prop_name}__Loop{i}.txt"
         # Check separate non-adversarial file
-        filename_nonadv = f"{onnx_name}__{prop_name}__Loop{i}_non_adversarial.txt"
+        filename_nonadv = f"{prop_fol}/{onnx_name}__{prop_name}__Loop{i}_non_adversarial.txt"
         
         # Process adversarial file
         try:
@@ -104,7 +106,7 @@ def merge_adversarial_files(onnx_name, prop_name, num_loops=50):
     
     # Write merged adversarial file
     if merged_adv_content:
-        with open('prop_8_data/adv_merged.txt', 'w') as file:
+        with open(f'{prop_fol}/adv_merged.txt', 'w') as file:
             file.writelines(merged_adv_content)
         print(f"Created 'adv_merged.txt' with {len(merged_adv_content)} adversarial inputs")
     else:
@@ -112,7 +114,7 @@ def merge_adversarial_files(onnx_name, prop_name, num_loops=50):
     
     # Write merged non-adversarial file
     if merged_nonadv_content:
-        with open('prop_8_data/nonadv_merged.txt', 'w') as file:
+        with open(f'{prop_fol}/nonadv_merged.txt', 'w') as file:
             file.writelines(merged_nonadv_content)
         print(f"Created 'nonadv_merged.txt' with {len(merged_nonadv_content)} non-adversarial inputs")
     else:
@@ -127,7 +129,7 @@ adv_count, nonadv_count = merge_adversarial_files(onnx_name, prop_name)
 print(f"\nMerging completed")
 print(f"Total adversarial inputs merged: {adv_count}")
 print(f"Total non-adversarial inputs merged: {nonadv_count}")
-print(f"Files created: 'adv merged.txt' and 'nonadv merged.txt'")
+print(f"Files created: 'adv_merged.txt' and 'nonadv_merged.txt'")
 
 # Remove duplicates from merged files
 print("\nRemoving duplicates from merged files...")
@@ -155,29 +157,29 @@ def remove_duplicates_from_file(filename):
     except FileNotFoundError:
         print(f"File {filename} not found for duplicate removal")
 
-if os.path.exists('prop_8_data/adv_merged.txt'):
-    remove_duplicates_from_file('adv_merged.txt')
+if os.path.exists(f'{prop_fol}/adv_merged.txt'):
+    remove_duplicates_from_file(f'{prop_fol}/adv_merged.txt')
 
-if os.path.exists('prop_8_data/nonadv_merged.txt'):
-    remove_duplicates_from_file('nonadv_merged.txt')
+if os.path.exists(f'{prop_fol}/nonadv_merged.txt'):
+    remove_duplicates_from_file(f'{prop_fol}/nonadv_merged.txt')
 
 def get_onnx_outputs(onnx_path, input_vector):
     # Load ONNX model
     sess = rt.InferenceSession(onnx_path)
     input_name = sess.get_inputs()[0].name
-    print("Expected input shape:", sess.get_inputs()[0].shape)
+    # print("Expected input shape:", sess.get_inputs()[0].shape)
     # Reshape input as needed (assuming 1x5)
     input_array = np.array(input_vector, dtype=np.float32).reshape(1, 1, 1, 5)
     outputs = sess.run(None, {input_name: input_array})
     # Flatten output to 1D list
     return outputs[0].flatten().tolist()
 
-def merge_adversarial_files_with_outputs(onnx_name, prop_name, onnx_path, num_loops=30):
+def merge_adversarial_files_with_outputs(onnx_name, prop_name, onnx_path, num_loops=5):
     merged_adv_content = []
     merged_adv_with_outputs = []
 
     for i in range(num_loops):
-        filename_adv = f"{onnx_name}__{prop_name}__Loop{i}.txt"
+        filename_adv = f"{prop_fol}/{onnx_name}__{prop_name}__Loop{i}.txt"
         try:
             with open(filename_adv, 'r') as file:
                 lines = file.readlines()
@@ -201,15 +203,44 @@ def merge_adversarial_files_with_outputs(onnx_name, prop_name, onnx_path, num_lo
         except Exception as e:
             print(f"Error processing {filename_adv}: {e}")
 
-    # Write merged adversarial file
-    with open('prop_8_data/adv_merged.txt', 'w') as file:
-        file.writelines(merged_adv_content)
-    # Write merged adversarial file with outputs
-    with open('prop_8_data/adv_merged_with_outputs.txt', 'w') as file:
+    # Write merged adversarial file with outputs (do not overwrite adv_merged.txt here)
+    with open(f'{prop_fol}/adv_merged_with_outputs.txt', 'w') as file:
         file.writelines(merged_adv_with_outputs)
     print(f"Created 'adv_merged_with_outputs.txt' with {len(merged_adv_with_outputs)} entries")
 
+def merge_non_adversarial_files_with_outputs(onnx_name, prop_name, onnx_path, num_loops=5):
+    merged_nonadv_content = []
+    merged_nonadv_with_outputs = []
+
+    for i in range(num_loops):
+        filename_nonadv = f"{prop_fol}/{onnx_name}__{prop_name}__Loop{i}_non_adversarial.txt"
+        try:
+            with open(filename_nonadv, 'r') as file:
+                lines = file.readlines()
+            
+            # Skip first line (status line) and process the rest
+            for line in lines[1:]:  # Skip first line which contains "Status: non-adversarial inputs found"
+                line_stripped = line.strip()
+                
+                if line_stripped.startswith('[') and line_stripped.endswith(']'):
+                    merged_nonadv_content.append(line_stripped + '\n')
+                    # Parse input vector
+                    input_vector = eval(line_stripped)
+                    # Get ONNX outputs
+                    output_vector = get_onnx_outputs(onnx_path, input_vector)
+                    # Save input and output together
+                    merged_nonadv_with_outputs.append(f"{line_stripped} => {output_vector}\n")
+                    
+        except Exception as e:
+            print(f"Error processing {filename_nonadv}: {e}")
+
+    # Write merged non-adversarial file with outputs
+    with open(f'{prop_fol}/nonadv_merged_with_outputs.txt', 'w') as file:
+        file.writelines(merged_nonadv_with_outputs)
+    print(f"Created 'nonadv_merged_with_outputs.txt' with {len(merged_nonadv_with_outputs)} entries")
+
 # Usage after your loop:
 merge_adversarial_files_with_outputs(onnx_name, prop_name, onnx_path)
+merge_non_adversarial_files_with_outputs(onnx_name, prop_name, onnx_path)
 
 

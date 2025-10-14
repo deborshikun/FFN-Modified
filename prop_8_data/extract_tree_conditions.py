@@ -1,32 +1,21 @@
 """
 Extract decision tree split conditions using a depth-first search (DFS) traversal
-and write them to a text file, one per line, in traversal order.
+and write them to a text file, one per line, in traversal order, including the
+resultant class at each leaf.
 """
 
 import pickle
 from pathlib import Path
+import numpy as np
 
-model_path = Path("decision_tree_model.pkl")
-output_path = Path("tree_conditions_paths.txt")
+# Resolve paths relative to this script's directory for robustness
+BASE_DIR = Path(__file__).parent
+model_path = BASE_DIR / "decision_tree_model.pkl"
+output_path = BASE_DIR / "tree_conditions_paths.txt"
 
 def load_model(model_path):
     with model_path.open('rb') as f:
         return pickle.load(f)
-
-def get_feature_names(tree_estimator):
-    if hasattr(tree_estimator, 'feature_names_in_'):
-        return [str(x) for x in list(tree_estimator.feature_names_in_)]
-    if hasattr(tree_estimator, 'n_features_in_'):
-        n = int(tree_estimator.n_features_in_)
-        return [f'feature_{i}' for i in range(n)]
-    tree = tree_estimator.tree_
-    feat = getattr(tree, 'feature', None)
-    if feat is not None:
-        import numpy as np
-        valid = feat[feat >= 0]
-        n = int(np.max(valid)) + 1 if valid.size > 0 else 0
-        return [f'feature_{i}' for i in range(n)]
-    return []
 
 def extract_paths(tree_estimator):
     tree = tree_estimator.tree_
@@ -34,22 +23,36 @@ def extract_paths(tree_estimator):
     threshold = tree.threshold
     children_left = tree.children_left
     children_right = tree.children_right
-    feature_names = get_feature_names(tree_estimator)
+
+    # Map class indices to readable labels
+    label_map = {0: 'Non-Adversarial (UNSAT)', 1: 'Adversarial (SAT)'}
+    classes = getattr(tree_estimator, 'classes_', None)
+
+    def leaf_label(node_id):
+        # tree.value has shape (n_nodes, n_outputs, n_classes)
+        values = tree.value[node_id][0]
+        pred_idx = int(np.argmax(values))
+        if classes is not None:
+            pred_class = classes[pred_idx]
+        else:
+            pred_class = pred_idx
+        # Ensure integer keys for label_map
+        try:
+            return label_map[int(pred_class)]
+        except Exception:
+            return str(pred_class)
+
     paths = []
 
     def dfs(node_id, path):
         left = children_left[node_id]
         right = children_right[node_id]
         if left == -1 and right == -1:
-            # Leaf node: save the path
-            paths.append(', '.join(path))
+            # Leaf node: save the path with resultant class label
+            paths.append(', '.join(path) + f", class = {leaf_label(node_id)}")
             return
         feat_idx = int(feature[node_id])
-        feat_name = (
-            feature_names[feat_idx]
-            if feat_idx < len(feature_names)
-            else f'feature_{feat_idx}'
-        )
+        feat_name = f"X_{feat_idx}"
         thr = float(threshold[node_id])
         # Left child: condition is <=
         dfs(left, path + [f"{feat_name} <= {thr:.6g}"])
@@ -58,6 +61,7 @@ def extract_paths(tree_estimator):
 
     dfs(0, [])
     return paths
+
 
 tree_estimator = load_model(model_path)
 paths = extract_paths(tree_estimator)

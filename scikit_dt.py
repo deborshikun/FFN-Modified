@@ -152,7 +152,7 @@ plt.figure(figsize=(80, 50))
 plot_tree(
     clf, 
     filled=True, 
-    feature_names=['ρ', 'θ', 'ψ', 'v_own', 'v_int'], 
+    feature_names=['X_0', 'X_1', 'X_2', 'X_3', 'X_4'], 
     class_names=['Non-Adversarial (UNSAT)', 'Adversarial (SAT)'], 
     rounded=True,
     fontsize=13,  
