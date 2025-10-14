@@ -42,39 +42,73 @@ def onnxEval(onnxModel,inVals,inpDtype, inpShape):
    return flatOut
 
 # --- MODIFIED FUNCTION ---
-def propCheck(inputs, specs, outputs):
-    found_adv = False
-    adv_inputs = []
-    non_adv_inputs = [] # New list for non-adversarial inputs
-    i = len(supersats)
-    k = len(superunsats)
+# def propCheck(inputs, specs, outputs):
+#     found_adv = False
+#     adv_inputs = []
+#     non_adv_inputs = [] # New list for non-adversarial inputs
+#     i = len(supersats)
+#     k = len(superunsats)
     
-    # Check for each property in specs
+#     # Check for each property in specs
+#     for propMat, propRhs in specs:
+#         vec = propMat.dot(outputs)
+#         sat = np.all(vec <= propRhs)
+#         if sat:
+#             supersats[i] = inputs
+#             found_adv = True
+#             adv_inputs.append(inputs)
+            
+#             # Convert inputs to tuple so it can be added to set (lists are not hashable)
+#             inputs_tuple = tuple(inputs)
+            
+#             # Only print if this adversarial input hasn't been printed before
+#             if inputs_tuple not in printed_adversarial_inputs:
+#                 print(f"Adversarial input found: {inputs}")
+#                 printed_adversarial_inputs.add(inputs_tuple)
+            
+#             i += 1
+#         else:
+#             # This is a non-adversarial input
+#             superunsats[k] = inputs
+#             non_adv_inputs.append(inputs) # Add to our new list
+#             k += 1
+
+#     # Return all three results
+#     return found_adv, adv_inputs, non_adv_inputs
+
+# FFNEvaluation.py
+
+def propCheck(inputs, specs, outputs):
+    adv_inputs = []
+    non_adv_inputs = []
+    
+    # Flag to track if the input is adversarial for ANY property
+    is_adversarial_for_this_input = False
+    
+    # First, check against all properties to see if it's adversarial
     for propMat, propRhs in specs:
         vec = propMat.dot(outputs)
-        sat = np.all(vec <= propRhs)
-        if sat:
-            supersats[i] = inputs
-            found_adv = True
-            adv_inputs.append(inputs)
-            
-            # Convert inputs to tuple so it can be added to set (lists are not hashable)
-            inputs_tuple = tuple(inputs)
-            
-            # Only print if this adversarial input hasn't been printed before
-            if inputs_tuple not in printed_adversarial_inputs:
-                print(f"Adversarial input found: {inputs}")
-                printed_adversarial_inputs.add(inputs_tuple)
-            
-            i += 1
-        else:
-            # This is a non-adversarial input
-            superunsats[k] = inputs
-            non_adv_inputs.append(inputs) # Add to our new list
-            k += 1
+        if np.all(vec <= propRhs):
+            # If it satisfies any property, it's adversarial.
+            is_adversarial_for_this_input = True
+            break # No need to check other properties
 
-    # Return all three results
-    return found_adv, adv_inputs, non_adv_inputs
+    # After checking all properties, classify the input ONCE.
+    if is_adversarial_for_this_input:
+        supersats[len(supersats)] = inputs
+        adv_inputs.append(inputs)
+        
+        inputs_tuple = tuple(inputs)
+        if inputs_tuple not in printed_adversarial_inputs:
+            print(f"Adversarial input found: {inputs}")
+            printed_adversarial_inputs.add(inputs_tuple)
+    else:
+        # Only if it's not adversarial for ANY property, add it here.
+        superunsats[len(superunsats)] = inputs
+        non_adv_inputs.append(inputs)
+            
+    # Return the result based on whether any adversarial inputs were found
+    return len(adv_inputs) > 0, adv_inputs, non_adv_inputs
     
 
 def learning(cpos,cneg,iRange,numInputs):
@@ -95,7 +129,6 @@ def learning(cpos,cneg,iRange,numInputs):
                    iRange[nodeSelect][1]=temp
 
 
-# --- MODIFIED FUNCTION ---
 # I continue sampling until I find an adversarial input or exhaust the sampling attempts
 def makeSample(onnxModel, numInputs, inRanges, samples, specs, inpDtype, inpShape):
     sampleInputList = []

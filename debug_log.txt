@@ -1,0 +1,5 @@
+Starting debug for benchmarks/acasxu/ACASXU_run2a_2_9_batch_2000.onnx
+================================================================================
+
+DEBUG: sampleEval returned 459 adversarial inputs
+DEBUG: sampleEval returned 132 non-adversarial inputs

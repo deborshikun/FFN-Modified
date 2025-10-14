@@ -69,7 +69,7 @@ def merge_adversarial_files(onnx_name, prop_name, num_loops=5):
                             
                         if in_adversarial_section and line_stripped.startswith('[') and line_stripped.endswith(']'):
                             merged_adv_content.append(line_stripped + '\n')
-                            print(f"  Added adversarial input: {line_stripped[:50]}...")
+                        #     print(f"  Added adversarial input: {line_stripped[:50]}...")
                 else:
                     print(f"No adversarial inputs found in {filename_adv}")
             
@@ -95,7 +95,7 @@ def merge_adversarial_files(onnx_name, prop_name, num_loops=5):
                     
                     if line_stripped.startswith('[') and line_stripped.endswith(']'):
                         merged_nonadv_content.append(line_stripped + '\n')
-                        print(f"  Added non-adversarial input: {line_stripped[:50]}...")
+                    #     print(f"  Added non-adversarial input: {line_stripped[:50]}...")
             else:
                 print(f"No non-adversarial inputs found in {filename_nonadv}")
             

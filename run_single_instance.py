@@ -82,7 +82,6 @@ def runSingleInstance(onnxFile, vnnlibFile, timeout_duration=None):
    # Return both the result string and the list of non-adversarial inputs
    return result, all_non_adv_inputs
 
-
 #Main function
 if __name__ == '__main__':
    # Parse arguments
@@ -132,8 +131,8 @@ if __name__ == '__main__':
       cmd_timeout = float(timeout_arg)
 
    # Register the signal function handler
-   signal.signal(signal.SIGALRM, handler)
-   signal.alarm(int(cmd_timeout))
+#    signal.signal(signal.SIGALRM, handler)
+#    signal.alarm(int(cmd_timeout))
    
    outFile = open(resultFile, "w")
    # --- NEW: Open the second file for writing ---
