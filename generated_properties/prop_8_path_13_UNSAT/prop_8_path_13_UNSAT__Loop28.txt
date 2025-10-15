@@ -1,0 +1,4 @@
+
+--- STDERR ---
+usage: run_single_instance.py [-h] [-m M] [-p P] [-o O] [-t T]
+run_single_instance.py: error: unrecognized arguments: benchmarks/acasxu/ACASXU_run2a_2_9_batch_2000.onnx generated_properties\prop_8_path_13_UNSAT.vnnlib 300
